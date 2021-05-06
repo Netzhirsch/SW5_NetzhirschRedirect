@@ -13,14 +13,18 @@
         <![CDATA[
             Leitet ausländische Besucher weiter an den jeweiligen Shop.
             Optional kann für einen Shop an Sprache angegeben werden. Anhand dieser Sprache wird automatisch nach einem passenden Shop gesucht.
-            Das Plugin pro Shop deaktiviert werden.
+            Das Plugin kann pro Shop deaktiviert werden.
+            Die Umleitung kann nach IP und/oder Browser-Sprache geschehen.
             Dieses Plugin enthält GeoLite2-Daten, die von MaxMind erstellt wurden, erhältlich bei
             <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
         ]]>
     </description>
     <description>
         <![CDATA[
-            Redirects foreign visitors to the respective shop.
+           Forwards foreign visitors to the respective shop.
+            Optionally, a language can be specified for a shop. This language is used to automatically search for a suitable shop.
+            The plugin can be deactivated for each shop.
+            The redirection can be done by IP and/or browser language.
             This plugin contains GeoLite2 data created by MaxMind, available at.
             <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
         ]]>
