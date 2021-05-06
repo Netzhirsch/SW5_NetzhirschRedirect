@@ -1,0 +1,23 @@
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service
+                id="netzhirsch_redirect.subscriber.frontend"
+                class="NetzhirschRedirect\Subscriber\Frontend"
+                public="true"
+        >
+            <tag name="shopware.event_subscriber"/>
+            <argument>%netzhirsch_redirect.plugin_dir%</argument>
+        </service>
+
+        <service
+            id="netzhirsch_redirect.components.base_url_finder"
+            class="NetzhirschRedirect\Components\BaseUrlFinder"
+        >
+        </service>
+
+    </services>
+
+</container>

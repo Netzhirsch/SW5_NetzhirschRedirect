@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.3/engine/Shopware/Components/Plugin/schema/config.xsd">
+    <elements>
+        <element scope="shop" type="boolean">
+            <name>withoutConfirmation</name>
+            <label lang="de">Ohne Rückfrage umleiten</label>
+            <label>Redirect without confirmation</label>
+            <value>1</value>
+        </element>
+        <element scope="shop" type="select">
+            <name>locale</name>
+            <label>language</label>
+            <label lang="de">Sprache</label>
+            <description lang="de">Zu einem Shop mit dieser Sprache umleiten.</description>
+            <description>Redirect to a shop with this language.</description>
+            <store>Shopware.apps.Base.store.Locale</store>
+        </element>
+        <element scope="shop" type="boolean">
+            <name>active</name>
+            <label lang="de">In diesen Shop aktiv</label>
+            <label>Active in this shop</label>
+            <value>1</value>
+        </element>
+        <element scope="shop" type="combo">
+            <name>redirectRule</name>
+            <label lang="de">Umleitungsregel</label>
+            <label>Redirect rule</label>
+            <value>ip</value>
+            <store>
+                <option>
+                    <value>ip</value>
+                    <label lang="de">IP-Adresse</label>
+                    <label>IP-Address</label>
+                </option>
+                <option>
+                    <value>browser</value>
+                    <label lang="de">Browser Sprache</label>
+                    <label>Browser language</label>
+                </option>
+                <option>
+                    <value>ip/browser</value>
+                    <label lang="de">zuerst nach IP dann nach Browser-Sprache</label>
+                    <label>first after IP then according to browser language</label>
+                </option>
+                <option>
+                    <value>browser/ip</value>
+                    <label lang="de">zuerst nach Browser-Sprache dann nach IP</label>
+                    <label>first after browser language then according to IP</label>
+                </option>
+            </store>
+        </element>
+    </elements>
+</config>
