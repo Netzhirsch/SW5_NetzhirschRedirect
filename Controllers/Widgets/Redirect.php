@@ -19,23 +19,36 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
      */
 	public function indexAction() {
 
-        $newUrl = $this->getRedirectUrl();
-        if (empty($newUrl))
-            return;
-
-	    header('Location: '.$newUrl);
-        exit();
-	}
-
-    private function getRedirectUrl(){
-
         $session = Shopware()->Session();
         $firstRun = $session->get(self::SESSION_KEY);
         if ($firstRun)
             return null;
 
-        $redirectUrl = $this->container->get('netzhirsch_redirect.components.base_url_finder');
-        return $redirectUrl->findUrl($session, $this->getModelManager());
+        $newUrl = $this->getRedirectUrl();
+        if (empty($newUrl))
+            return;
+
+        $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
+        $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
+        $config = $configReader->getByPluginName($plugin->getName(),Shopware()->Shop());
+        $currentUrl = $_SERVER['REDIRECT_URL'];
+
+        if ($config['withoutConfirmation'] && $currentUrl != $newUrl) {
+            $session->offsetSet(self::SESSION_KEY, true);
+            header('Location: '.$newUrl);
+            exit();
+        }
+	}
+
+    private function getRedirectUrl(){
+
+        try {
+            $redirectUrlService = $this->container->get('netzhirsch_redirect.components.base_url_finder');
+        } catch (Exception $e) {
+            return null;
+        }
+
+        return $redirectUrlService->findUrl($this->getModelManager());
     }
 
 

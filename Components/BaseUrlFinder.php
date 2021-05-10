@@ -8,9 +8,7 @@ use NetzhirschRedirect\Models\Shop\Shop;
 class BaseUrlFinder
 {
 
-    const SESSION_KEY = 'firstRun';
-
-    function findUrl($session,$em){
+    function findUrl($em){
         $shop = Shopware()->Shop();
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
@@ -18,8 +16,7 @@ class BaseUrlFinder
 
         if (
             !isset($config['active']) ||
-            !$config['active'] ||
-            !isset($config['withoutConfirmation'])
+            !$config['active']
         ) {
             return null;
         }
@@ -84,8 +81,6 @@ class BaseUrlFinder
 
         if (empty($subShop))
             return null;
-
-        $session->offsetSet(self::SESSION_KEY, true);
 
         return $subShop->getBaseUrl();
     }

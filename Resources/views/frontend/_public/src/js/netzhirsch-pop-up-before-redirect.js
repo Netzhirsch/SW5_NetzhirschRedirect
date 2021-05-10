@@ -4,30 +4,35 @@
     if (withoutConfirmation === undefined || active === 'off')
         return;
 
+    let newUrl = '';
     if (withoutConfirmation === 'off' && redirect === '') {
-        $.modal.open(
-            $('#netzhirsch-content').html(),
-            {
-                title: $('#netzhirsch-title').html(),
-                overlay: true,
-                height:200
+        $.ajax({
+            url: "/frontend/redirect/ajaxRedirect",
+            method: 'GET',
+            success: function(result) {
+                setLocalStorage('netzhirsch-redirect', '1');
+                if (result !== '')
+                    newUrl = result;
             }
-        );
+        });
+        if (!window.location.includes(newUrl)) {
+            $.modal.open(
+                $('#netzhirsch-content').html(),
+                {
+                    title: $('#netzhirsch-title').html(),
+                    overlay: true,
+                    height: 200
+                }
+            );
+        }
     }
 
     $('.netzhirsch-redirect').on('click',function (){
         $.modal.close();
         let redirect = $(this).data('netzhirsch-redirect');
         if (redirect === 1) {
-            $.ajax({
-                url: "/frontend/redirect/ajaxRedirect",
-                method: 'GET',
-                success: function(result) {
-                    setLocalStorage('netzhirsch-redirect', '1');
-                    if (result !== '')
-                        window.location.replace(window.location+result);
-                }
-            });
+            setLocalStorage('netzhirsch-redirect', '1');
+            window.location.replace(window.location+result);
         } else {
             setLocalStorage('netzhirsch-redirect', '0');
         }
