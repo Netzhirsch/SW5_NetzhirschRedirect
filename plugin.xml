@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <plugin xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.2/engine/Shopware/Components/Plugin/schema/plugin.xsd">
-    <label lang="de">Weiterleitung ausländischer Besucher</label>
-    <label>Redirect foreign visitors</label>
+    <label lang="de">Weiterleitung ausländischer Besucher Premium</label>
+    <label>Redirect foreign visitors premium</label>
 
     <version>1.0.0</version>
     <copyright>Copyright (c) 2021, Netzhirsch GbR</copyright>
@@ -11,18 +11,20 @@
 
     <description lang="de">
         <![CDATA[
-            Leitet ausländische Besucher weiter an den jeweiligen Shop.
-            Optional kann für einen Shop an Sprache angegeben werden. Anhand dieser Sprache wird automatisch nach einem passenden Shop gesucht.
-            Das Plugin pro Shop deaktiviert werden.
-            Dieses Plugin enthält GeoLite2-Daten, die von MaxMind erstellt wurden, erhältlich bei
-            <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+            Diese Erweiterung leitet ausländische Besucher an den jeweiligen Sprach- oder Subshop weiter. Das Besondere ist, dass dies auch bei aktiviertem Caching funktioniert.
+            Optional kann für einen Shop eine Sprache angegeben werden, anhand dieser eine Zuordnung stattfinden kann.
+            Natürlich kann die Weiterleitung auch pro Sprach- und Subshop deaktiviert werden.
+            Dieses Plugin enthält GeoLite2-Daten, die von MaxMind zur Verfügung gestellt wurden. 
+			Erhältlich bei <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
         ]]>
     </description>
     <description>
         <![CDATA[
-            Redirects foreign visitors to the respective shop.
-            This plugin contains GeoLite2 data created by MaxMind, available at.
-            <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
+            This extension forwards foreign visitors to the respective language or subshop. The special thing is that this also works with activated caching.
+			Optionally, a language can be specified for a shop, based on which an assignment can take place.
+			Of course, forwarding can also be deactivated for each language and subshop.
+			This plugin contains GeoLite2 data provided by MaxMind.
+			Available at <a href="https://www.maxmind.com"> https://www.maxmind.com </a>.
         ]]>
     </description>
 

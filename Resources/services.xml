@@ -15,6 +15,7 @@
         <service
             id="netzhirsch_redirect.components.base_url_finder"
             class="NetzhirschRedirect\Components\BaseUrlFinder"
+			public="true"
         >
         </service>
 

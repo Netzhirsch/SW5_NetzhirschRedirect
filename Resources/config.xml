@@ -3,30 +3,37 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/5.3/engine/Shopware/Components/Plugin/schema/config.xsd">
     <elements>
         <element scope="shop" type="boolean">
-            <name>withoutConfirmation</name>
-            <label lang="de">Ohne Rückfrage umleiten</label>
-            <label>Redirect without confirmation</label>
-            <value>1</value>
+            <name>active</name>
+            <label lang="de">Umleitung für diesen Subshop aktiv?</label>
+            <label>Umleitung für diesen Subshop aktiv?</label>
+            <value>true</value>
         </element>
+
+        <element scope="shop" type="boolean">
+            <name>withoutConfirmation</name>
+            <label lang="de">Ohne Rückfrage umleiten?</label>
+            <label>Redirect without asking?</label>
+            <value>true</value>
+            <description lang="de">Soll vor der Umleitung ein Popup angezeigt werden oder ohne Rückfrage umgeleitet werden?</description>
+            <description>Should a popup be displayed before the redirection or should the redirection be made without confirmation?</description>
+        </element>
+		
         <element scope="shop" type="select">
             <name>locale</name>
-            <label>language</label>
-            <label lang="de">Sprache</label>
-            <description lang="de">Zu einem Shop mit dieser Sprache umleiten.</description>
-            <description>Redirect to a shop with this language.</description>
+            <label lang="de">Sprache(n)</label>
+            <label>Language(s)</label>
+            <description lang="de">Diesem Shop werden folgende Sprachen zugeordnet. So kann ein Sprach-/Subshop für mehrere Sprachen verwendet werden.</description>
+            <description>The following languages are assigned to this shop. A language / subshop can be used for several languages.</description>
             <store>Shopware.apps.Base.store.Locale</store>
         </element>
-        <element scope="shop" type="boolean">
-            <name>active</name>
-            <label lang="de">In diesen Shop aktiv</label>
-            <label>Active in this shop</label>
-            <value>1</value>
-        </element>
+		
         <element scope="shop" type="combo">
             <name>redirectRule</name>
             <label lang="de">Umleitungsregel</label>
             <label>Redirect rule</label>
             <value>ip</value>
+            <description lang="de">Anhand welcher Kriterien soll eine Umleitung stattfinden?</description>
+            <description>Based on which criteria a diversion should take place.</description>
             <store>
                 <option>
                     <value>ip</value>
