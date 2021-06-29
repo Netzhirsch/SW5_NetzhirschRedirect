@@ -38,7 +38,7 @@ class Repository extends ShopRepository
     }
 
     /**
-     * @param $countryCode
+     * @param $locale
      * @return Shop|null
      */
     public function findOneOrNullByLocal(

@@ -14,7 +14,7 @@
             Diese Erweiterung leitet ausländische Besucher an den jeweiligen Sprach- oder Subshop weiter. Das Besondere ist, dass dies auch bei aktiviertem Caching funktioniert.
             Optional kann für einen Shop eine Sprache angegeben werden, anhand dieser eine Zuordnung stattfinden kann.
             Natürlich kann die Weiterleitung auch pro Sprach- und Subshop deaktiviert werden.
-            Dieses Plugin enthält GeoLite2-Daten, die von MaxMind zur Verfügung gestellt wurden. 
+            Dieses Plugin enthält GeoLite2-Daten, die von MaxMind zur Verfügung gestellt wurden.
 			Erhältlich bei <a href="https://www.maxmind.com">https://www.maxmind.com</a>.
         ]]>
     </description>
