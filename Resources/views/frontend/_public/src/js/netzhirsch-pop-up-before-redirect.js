@@ -27,7 +27,7 @@
                         let redirect = $(this).data('netzhirsch-redirect');
                         if (redirect === 1) {
                             setLocalStorage('netzhirsch-redirect', '1');
-                            window.location.replace(window.location+result);
+                            window.location.assign(window.location.protocol + '//' + window.location.hostname+'/'+result);
                         } else {
                             setLocalStorage('netzhirsch-redirect', '0');
                         }
