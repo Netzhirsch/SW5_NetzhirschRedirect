@@ -38,11 +38,11 @@ class Repository extends ShopRepository
     }
 
     /**
-     * @param $locale
+     * @param $locales
      * @return Shop|null
      */
-    public function findOneOrNullByLocal(
-        $locale
+    public function findOneOrNullByLocalIds(
+        $locales
     )
     {
         $builder = $this->getEntityManager()->createQueryBuilder();
@@ -51,8 +51,8 @@ class Repository extends ShopRepository
             return $builder->select('shop')
                 ->from(Shop::class, 'shop')
                 ->leftJoin('shop.locale', 'locale')
-                ->where('locale.id LIKE :locale')
-                ->setParameter('locale', '%'.$locale)
+                ->where('locale.id IN (:locales)')
+                ->setParameter('locales', $locales)
                 ->getQuery()
                 ->getOneOrNullResult()
                 ;

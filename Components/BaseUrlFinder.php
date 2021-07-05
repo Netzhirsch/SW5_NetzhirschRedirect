@@ -55,9 +55,9 @@ class BaseUrlFinder
 
         $repoShop = $em->getRepository(Shop::class);
 
-        if (!empty($config['locale'])) {
-            $locale = $config['locale'];
-            $subShop = $repoShop->findOneOrNullByLocal($locale);
+        if (!empty($config['locales'])) {
+            $locales = $config['locales'];
+            $subShop = $repoShop->findOneOrNullByLocalIds($locales);
         } else {
             switch($redirectRule) {
                 case 'ip':

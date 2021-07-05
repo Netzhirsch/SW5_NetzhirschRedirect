@@ -19,12 +19,15 @@
         </element>
 		
         <element scope="shop" type="select">
-            <name>locale</name>
+            <name>locales</name>
             <label lang="de">Sprache(n)</label>
             <label>Language(s)</label>
             <description lang="de">Diesem Shop werden folgende Sprachen zugeordnet. So kann ein Sprach-/Subshop für mehrere Sprachen verwendet werden.</description>
             <description>The following languages are assigned to this shop. A language / subshop can be used for several languages.</description>
             <store>Shopware.apps.Base.store.Locale</store>
+            <options>
+                <multiSelect>true</multiSelect>
+            </options>
         </element>
 		
         <element scope="shop" type="combo">
