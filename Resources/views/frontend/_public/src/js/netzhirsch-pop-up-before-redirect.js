@@ -9,6 +9,7 @@
         $.ajax({
             url: "/frontend/redirect/ajaxRedirect",
             method: 'GET',
+            async:false,
             success: function(result) {
                 setLocalStorage('netzhirsch-redirect', '1');
                 if (result !== '')
