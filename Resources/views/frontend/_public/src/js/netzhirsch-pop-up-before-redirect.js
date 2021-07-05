@@ -15,7 +15,7 @@
                     newUrl = result;
             }
         });
-        if (!window.location.includes(newUrl)) {
+        if (!window.location.href.contains(newUrl)) {
             $.modal.open(
                 $('#netzhirsch-content').html(),
                 {
