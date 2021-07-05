@@ -9,23 +9,22 @@
         $.ajax({
             url: "/frontend/redirect/ajaxRedirect",
             method: 'GET',
-            async:false,
             success: function(result) {
                 setLocalStorage('netzhirsch-redirect', '1');
                 if (result !== '')
                     newUrl = result;
+                if (!window.location.href.indexOf(newUrl)) {
+                    $.modal.open(
+                        $('#netzhirsch-content').html(),
+                        {
+                            title: $('#netzhirsch-title').html(),
+                            overlay: true,
+                            height: 200
+                        }
+                    );
+                }
             }
         });
-        if (!window.location.href.indexOf(newUrl)) {
-            $.modal.open(
-                $('#netzhirsch-content').html(),
-                {
-                    title: $('#netzhirsch-title').html(),
-                    overlay: true,
-                    height: 200
-                }
-            );
-        }
     }
 
     $('.netzhirsch-redirect').on('click',function (){
