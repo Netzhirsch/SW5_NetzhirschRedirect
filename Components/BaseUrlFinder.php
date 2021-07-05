@@ -36,7 +36,7 @@ class BaseUrlFinder
         if (strpos($redirectRule, 'browser') !== false) {
             $repoShop = $em->getRepository(Shop::class);
             /** @var Shop[] $subShops */
-            $subShops = $repoShop->findAll();
+            $subShops = $repoShop->getActiveShops();
             $possibleLanguages = [];
 
             foreach ($subShops as $shop) {
