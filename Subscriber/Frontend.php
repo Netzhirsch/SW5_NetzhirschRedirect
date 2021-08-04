@@ -44,13 +44,11 @@ class Frontend implements SubscriberInterface
         $view->addTemplateDir($path . '/Resources/views');
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
         $config = $configReader->getByPluginName($plugin->getName());
-        $withoutConfirmation = 'off';
-        if ($config['withoutConfirmation'])
-            $withoutConfirmation = 'on';
+		
+        $withoutConfirmation = ($config['withoutConfirmation']) ? 'on' : 'off';
         $view->assign('withoutConfirmation',$withoutConfirmation);
-        $active = 'off';
-        if ($config['active'])
-            $active = 'on';
+        
+		$active = ($config['active']) ? 'on' : 'off';
         $view->assign('active',$active);
 	}
 

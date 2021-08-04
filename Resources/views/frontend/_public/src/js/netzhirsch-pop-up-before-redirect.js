@@ -19,7 +19,7 @@
                         {
                             title: $('#netzhirsch-title').html(),
                             overlay: true,
-                            height: 200
+                            sizing: 'content'
                         }
                     );
                     $('.netzhirsch-redirect').on('click',function (){

@@ -1,22 +1,20 @@
 {extends file='parent:frontend/index/index.tpl'}
 
-{namespace name="plugins/netzhirsch/redirect"}
-
 {block name='frontend_index_after_body'}
     <div class="netzhirsch_redirect--hidden">
         <div id="netzhirsch-title">
-            {s name="frontend/content/redirect/title"}Weiterleitung{/s}
+            {s namespace="frontend/plugins/netzhirschRedirect" name="popupTitle"}Weiterleitung{/s}
         </div>
         <div id="netzhirsch-content">
             <div class="panel">
                 <div class="panel--body">
-                    <h3>{s name="frontend/content/redirect/question"}Möchten Sie weitergeleitet werden?{/s}</h3>
+                    <p>{s namespace="frontend/plugins/netzhirschRedirect" name="popupQuestion"}Sie scheinen aus einem anderen Land zu kommen.<br>Möchten Sie zu unserem entsprechenden Shop weitergeleitet werden?{/s}</p>
                     <div class="panel--actions">
                         <a class="btn is--primary netzhirsch-redirect" data-netzhirsch-redirect="1">
-                            {s name="frontend/content/redirect/yes"}ja{/s}
+                            {s namespace="frontend/plugins/netzhirschRedirect" name="popupConfirmButton"}ja{/s}
                         </a>
                         <a class="btn is--secondary netzhirsch-redirect"  data-netzhirsch-redirect="0">
-                            {s name="frontend/content/redirect/no"}nein{/s}
+                            {s namespace="frontend/plugins/netzhirschRedirect" name="popupDeclineButton"}nein{/s}
                         </a>
                     </div>
                 </div>
