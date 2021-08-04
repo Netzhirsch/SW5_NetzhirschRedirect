@@ -8,7 +8,7 @@ use NetzhirschRedirect\Models\Shop\Shop;
 class BaseUrlFinder
 {
 
-    function findUrl($em){
+    public function findUrl($em){
         $shop = Shopware()->Shop();
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');

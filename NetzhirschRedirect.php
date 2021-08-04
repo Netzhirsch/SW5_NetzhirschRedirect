@@ -28,12 +28,9 @@ class NetzhirschRedirect extends Plugin {
         $classes = [$modelManager->getClassMetadata(LocationByIP::class)];
         try {
             $tool->createSchema($classes);
+			$this->readCsv($modelManager);
         } catch (ToolsException $e) {
-            var_dump($e->getMessage());
-            die();
         }
-
-        $this->readCsv($modelManager);
     }
 
     public function uninstall(UninstallContext $context)
@@ -95,8 +92,6 @@ class NetzhirschRedirect extends Plugin {
         try {
             $modelManager->flush();
         } catch (OptimisticLockException $e) {
-            var_dump($e->getMessage());
-            die();
         }
     }
 

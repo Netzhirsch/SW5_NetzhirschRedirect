@@ -36,7 +36,6 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
         if ($config['withoutConfirmation'] && $currentUrl != $newUrl) {
             $session->offsetSet(self::SESSION_KEY, true);
             header('Location: '.$newUrl);
-            exit();
         }
 	}
 
