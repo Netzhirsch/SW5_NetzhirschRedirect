@@ -9,7 +9,7 @@ use Shopware\Components\Model\ModelEntity;
 
 /**
  * @ORM\Entity(repositoryClass="Repository")
- * @ORM\Table(name="s_netzhirsch_location_by_ip")
+ * @ORM\Table(name="s_plugin_netzhirschRedirect_locationByIp")
  * @ORM\HasLifecycleCallbacks
  */
 class LocationByIP extends ModelEntity

@@ -19,8 +19,10 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
      */
 	public function indexAction() {
 
+
         $session = Shopware()->Session();
         $firstRun = $session->get(self::SESSION_KEY);
+
         if ($firstRun)
             return null;
 
@@ -31,14 +33,19 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
         $config = $configReader->getByPluginName($plugin->getName(),Shopware()->Shop());
+
         $currentUrl = $_SERVER['REDIRECT_URL'];
 
         if ($config['withoutConfirmation'] && $currentUrl != $newUrl) {
             $session->offsetSet(self::SESSION_KEY, true);
             header('Location: '.$newUrl);
+            exit();
         }
 	}
 
+    /**
+     * @throws Exception
+     */
     private function getRedirectUrl(){
 
         try {

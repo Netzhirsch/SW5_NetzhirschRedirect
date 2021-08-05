@@ -31,7 +31,6 @@ class Repository extends ModelRepository
                 ->getOneOrNullResult()
                 ;
         } catch (NonUniqueResultException $e) {
-            var_dump($e->getMessage());
             return null;
         }
     }

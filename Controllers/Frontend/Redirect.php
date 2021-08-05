@@ -13,7 +13,10 @@ class Shopware_Controllers_Frontend_Redirect extends Enlight_Controller_Action {
         return [ 'ajaxRedirect' ];
     }
 
-	public function ajaxRedirectAction()
+    /**
+     * @throws Exception
+     */
+    public function ajaxRedirectAction()
     {
         Shopware()->Container()->get('front')->Plugins()->ViewRenderer()->setNoRender();
         $redirectUrl = $this->container->get('netzhirsch_redirect.components.base_url_finder');

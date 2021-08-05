@@ -19,7 +19,7 @@ class NetzhirschRedirect extends Plugin {
     public function install(InstallContext $context)
     {
         $schemaManager = $this->container->get('dbal_connection')->getSchemaManager();
-        if ($schemaManager->tablesExist(['s_netzhirsch_location_by_ip']))
+        if ($schemaManager->tablesExist(['s_plugin_netzhirschRedirect_locationByIp']))
             return ['success' => true, 'invalidateCache' => ['config', 'backend', 'proxy', 'frontend']];
 
         /** @var ModelManager $modelManager */

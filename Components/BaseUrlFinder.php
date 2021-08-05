@@ -14,15 +14,9 @@ class BaseUrlFinder
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
         $config = $configReader->getByPluginName($plugin->getName(),$shop);
 
-        if (
-            !isset($config['active']) ||
-            !$config['active']
-        ) {
+        if (empty($config['active']) || !isset($config['redirectRule'])) {
             return null;
         }
-
-        if (!isset($config['redirectRule']))
-            return null;
 
         $redirectRule = $config['redirectRule'];
         $countryCode = [];

@@ -32,7 +32,6 @@ class Repository extends ShopRepository
                 ->getOneOrNullResult()
                 ;
         } catch (NonUniqueResultException $e) {
-            var_dump($e->getMessage());
             return null;
         }
     }
@@ -57,7 +56,6 @@ class Repository extends ShopRepository
                 ->getOneOrNullResult()
                 ;
         } catch (NonUniqueResultException $e) {
-            var_dump($e->getMessage());
             return null;
         }
     }
