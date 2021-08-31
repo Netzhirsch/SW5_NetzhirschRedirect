@@ -4,7 +4,10 @@ namespace NetzhirschRedirect\Subscriber;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Enlight\Event\SubscriberInterface;
+use Enlight_Controller_Action;
 use Enlight_Event_EventArgs;
+use NetzhirschRedirect\Components\BaseUrlFinder;
+use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Theme\LessDefinition;
 
 class Frontend implements SubscriberInterface
@@ -14,12 +17,18 @@ class Frontend implements SubscriberInterface
 	 * @var string $pluginDirectory
 	 */
 	private $pluginDirectory;
+    private $baseUrlFinder;
+    private ModelManager $modelManager;
 
     public function __construct(
-		$pluginDirectory
+		$pluginDirectory,
+        BaseUrlFinder $baseUrlFinder,
+        ModelManager $modelManager
 	)
 	{
 		$this->pluginDirectory = $pluginDirectory;
+        $this->baseUrlFinder = $baseUrlFinder;
+        $this->modelManager = $modelManager;
     }
 
 	/**
@@ -38,18 +47,32 @@ class Frontend implements SubscriberInterface
 	public function onFrontendPostDispatch(Enlight_Event_EventArgs $args) {
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
         $path   = $plugin->getPath();
-        /** @var \Enlight_Controller_Action $controller */
+        /** @var Enlight_Controller_Action $controller */
         $controller = $args->get('subject');
         $view       = $controller->View();
         $view->addTemplateDir($path . '/Resources/views');
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-        $config = $configReader->getByPluginName($plugin->getName());
-		
+        $actualShop = Shopware()->Shop();
+        $config = $configReader->getByPluginName($plugin->getName(),$actualShop);
+
         $withoutConfirmation = ($config['withoutConfirmation']) ? 'on' : 'off';
         $view->assign('withoutConfirmation',$withoutConfirmation);
-        
+
 		$active = ($config['active']) ? 'on' : 'off';
+        $redirectShop = $this->baseUrlFinder->findUrl($this->modelManager);
+
+        if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
+            $active = 'off';
+
         $view->assign('active',$active);
+        if ($active == 'on') {
+            $local = $redirectShop->getLocale();
+            $view->assign('language',$local->getLanguage());
+            $view->assign('local',$local->getTerritory());
+        } else {
+            $view->assign('language','');
+            $view->assign('local','');
+        }
 	}
 
 	public function getWidgetsRedirectController() {

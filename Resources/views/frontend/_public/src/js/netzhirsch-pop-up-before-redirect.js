@@ -10,7 +10,8 @@
             url: "/frontend/redirect/ajaxRedirect",
             method: 'GET',
             success: function(result) {
-                setLocalStorage('netzhirsch-redirect', '1');
+                // setLocalStorage('netzhirsch-redirect', '1');
+                console.log(result);
                 if (result !== '')
                     newUrl = result;
                 if (!window.location.href.indexOf(newUrl) >= 0) {

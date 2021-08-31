@@ -9,6 +9,8 @@
             <div class="panel">
                 <div class="panel--body">
                     <p>{s namespace="frontend/plugins/netzhirschRedirect" name="popupQuestion"}Sie scheinen aus einem anderen Land zu kommen.<br>Möchten Sie zu unserem entsprechenden Shop weitergeleitet werden?{/s}</p>
+                    <p>{s namespace="frontend/plugins/netzhirschRedirect" name="popupLocal"}Shop für {/s}{$local}</p>
+                    <p>{s namespace="frontend/plugins/netzhirschRedirect" name="popupLanguage"}mit der Sprache {/s}{$language}</p>
                     <div class="panel--actions">
                         <a class="btn is--primary netzhirsch-redirect" data-netzhirsch-redirect="1">
                             {s namespace="frontend/plugins/netzhirschRedirect" name="popupConfirmButton"}ja{/s}

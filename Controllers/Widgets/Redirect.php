@@ -26,8 +26,8 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
         if ($firstRun)
             return null;
 
-        $newUrl = $this->getRedirectUrl();
-        if (empty($newUrl))
+        $shop = $this->getRedirectShop();
+        if (empty($shop))
             return;
 
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
@@ -36,9 +36,9 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
 
         $currentUrl = $_SERVER['REDIRECT_URL'];
 
-        if ($config['withoutConfirmation'] && $currentUrl != $newUrl) {
+        if ($config['withoutConfirmation'] && $currentUrl != $shop->getBaseUrl()) {
             $session->offsetSet(self::SESSION_KEY, true);
-            header('Location: '.$newUrl);
+            header('Location: '.$shop->getBaseUrl());
             exit();
         }
 	}
@@ -46,7 +46,7 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
     /**
      * @throws Exception
      */
-    private function getRedirectUrl(){
+    private function getRedirectShop(){
 
         try {
             $redirectUrlService = $this->container->get('netzhirsch_redirect.components.base_url_finder');

@@ -3,11 +3,17 @@
 namespace NetzhirschRedirect\Components;
 
 use NetzhirschRedirect\Models\LocationByIP\LocationByIP;
+use NetzhirschRedirect\Models\Shop\Repository;
 use NetzhirschRedirect\Models\Shop\Shop;
+use Shopware\Models\Shop\DetachedShop;
 
 class BaseUrlFinder
 {
 
+    /**
+     * @param $em
+     * @return null|Shop|DetachedShop
+     */
     public function findUrl($em){
         $shop = Shopware()->Shop();
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
@@ -27,8 +33,16 @@ class BaseUrlFinder
             $countryCode['byIp'] = $countryCodeTmp;
         }
 
+        /** @var Repository $repoShop */
+        $repoShop = $em->getRepository(Shop::class);
+
         if (strpos($redirectRule, 'browser') !== false) {
-            $repoShop = $em->getRepository(Shop::class);
+            $countryCodeByBrowser = $this->getLocalByBrowser();
+            $shopId = $repoShop->findByLocalesInShop($countryCodeByBrowser);
+            $shop = $repoShop->getById($shopId['shop_id']);
+            if (!empty($shop))
+                return $shop;
+
             /** @var Shop[] $subShops */
             $subShops = $repoShop->getActiveShops();
             $possibleLanguages = [];
@@ -40,7 +54,7 @@ class BaseUrlFinder
                 $possibleLanguages[] = $local[0];
             }
 
-            $countryCodeTmp = $this->getCountryCodeByBrowser($possibleLanguages);
+            $countryCodeTmp = $this->getLocalByBrowser($possibleLanguages);
             if (empty($countryCodeTmp))
                 return null;
 
@@ -76,7 +90,7 @@ class BaseUrlFinder
         if (empty($subShop))
             return null;
 
-        return $subShop->getBaseUrl();
+        return $subShop;
     }
 
     private function getCountryCodeByIP($em){
@@ -95,16 +109,14 @@ class BaseUrlFinder
     }
 
     /**
-     * @param array $possibleLanguages
      * @return null
      */
-    private function getCountryCodeByBrowser($possibleLanguages)
+    private function getLocalByBrowser()
     {
         if (!isset($_SERVER["HTTP_ACCEPT_LANGUAGE"]) || empty($_SERVER["HTTP_ACCEPT_LANGUAGE"]))
             return null;
 
         $languages = $_SERVER["HTTP_ACCEPT_LANGUAGE"];
-
         $languages = preg_split('/,\s*/', $languages);
         foreach ($languages as $language) {
 
@@ -118,13 +130,7 @@ class BaseUrlFinder
                 continue;
             }
 
-            $langCode = explode ('-', $matches[1]);
-            foreach ($possibleLanguages as $possibleLanguage) {
-                if (in_array ($possibleLanguage, $langCode)) {
-                    return $langCode[0];
-                }
-
-            }
+            return str_replace('-', '_', $language);
         }
 
         return null;

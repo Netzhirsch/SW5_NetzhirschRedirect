@@ -20,13 +20,13 @@ class Shopware_Controllers_Frontend_Redirect extends Enlight_Controller_Action {
     {
         Shopware()->Container()->get('front')->Plugins()->ViewRenderer()->setNoRender();
         $redirectUrl = $this->container->get('netzhirsch_redirect.components.base_url_finder');
-        $newUrl = $redirectUrl->findUrl($this->getModelManager());
-        if (empty($newUrl)) {
+        $shop = $redirectUrl->findUrl($this->getModelManager());
+        if (empty($shop)) {
             echo '';
             return;
         }
-        $newUrl = substr($newUrl, 1);
+        $url = substr($shop->getBaseUrl(), 1);
 
-        echo $newUrl;
+        echo $url;
     }
 }

@@ -10,6 +10,8 @@
         >
             <tag name="shopware.event_subscriber"/>
             <argument>%netzhirsch_redirect.plugin_dir%</argument>
+            <argument type="service" id="netzhirsch_redirect.components.base_url_finder" />
+            <argument type="service" id="models" />
         </service>
 
         <service
