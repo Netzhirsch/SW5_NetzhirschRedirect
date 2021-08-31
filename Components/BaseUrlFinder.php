@@ -37,24 +37,11 @@ class BaseUrlFinder
         $repoShop = $em->getRepository(Shop::class);
 
         if (strpos($redirectRule, 'browser') !== false) {
-            $countryCodeByBrowser = $this->getLocalByBrowser();
-            $shopId = $repoShop->findByLocalesInShop($countryCodeByBrowser);
-            $shop = $repoShop->getById($shopId['shop_id']);
+            $shop = $this->findShopByLocalInPluginConfig($repoShop);
             if (!empty($shop))
                 return $shop;
 
-            /** @var Shop[] $subShops */
-            $subShops = $repoShop->getActiveShops();
-            $possibleLanguages = [];
-
-            foreach ($subShops as $shop) {
-                $local = $shop->getLocale();
-                $local = $local->getLocale();
-                $local = explode('_', $local);
-                $possibleLanguages[] = $local[0];
-            }
-
-            $countryCodeTmp = $this->getLocalByBrowser($possibleLanguages);
+            $countryCodeTmp = $this->getLocalByBrowser();
             if (empty($countryCodeTmp))
                 return null;
 
@@ -63,28 +50,23 @@ class BaseUrlFinder
 
         $repoShop = $em->getRepository(Shop::class);
 
-        if (!empty($config['locales'])) {
-            $locales = $config['locales'];
-            $subShop = $repoShop->findOneOrNullByLocalIds($locales);
-        } else {
-            switch($redirectRule) {
-                case 'ip':
-                    $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byIp']);
-                    break;
-                case 'browser':
+        switch($redirectRule) {
+            case 'ip':
+                $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byIp']);
+                break;
+            case 'browser':
+                $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byBrowser']);
+                break;
+            case 'ip/browser':
+                $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byIp']);
+                if (empty($subShop))
                     $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byBrowser']);
-                    break;
-                case 'ip/browser':
+                break;
+            case 'browser/ip':
+                $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byBrowser']);
+                if (!empty($subShop))
                     $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byIp']);
-                    if (empty($subShop))
-                        $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byBrowser']);
-                    break;
-                case 'browser/ip':
-                    $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byBrowser']);
-                    if (!empty($subShop))
-                        $subShop = $repoShop->findOneOrNullByCountryCode($countryCode['byIp']);
-                    break;
-            }
+                break;
         }
 
         if (empty($subShop))
@@ -134,5 +116,16 @@ class BaseUrlFinder
         }
 
         return null;
+    }
+
+    /**
+     * @param Repository $repoShop
+     * @return Shop|DetachedShop
+     */
+    private function findShopByLocalInPluginConfig($repoShop)
+    {
+        $countryCodeByBrowser = $this->getLocalByBrowser();
+        $shopId = $repoShop->findByLocalesInShop($countryCodeByBrowser);
+        return $repoShop->getById($shopId['shop_id']);
     }
 }

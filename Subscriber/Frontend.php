@@ -9,6 +9,7 @@ use Enlight_Event_EventArgs;
 use NetzhirschRedirect\Components\BaseUrlFinder;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Theme\LessDefinition;
+use function Composer\Autoload\includeFile;
 
 class Frontend implements SubscriberInterface
 {
@@ -45,34 +46,38 @@ class Frontend implements SubscriberInterface
 	}
 
 	public function onFrontendPostDispatch(Enlight_Event_EventArgs $args) {
-        $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
-        $path   = $plugin->getPath();
+        $withoutConfirmation = '';
+        $language = '';
+        $local = '';
+        $active = '';
+
         /** @var Enlight_Controller_Action $controller */
         $controller = $args->get('subject');
         $view       = $controller->View();
-        $view->addTemplateDir($path . '/Resources/views');
-        $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
-        $actualShop = Shopware()->Shop();
-        $config = $configReader->getByPluginName($plugin->getName(),$actualShop);
 
-        $withoutConfirmation = ($config['withoutConfirmation']) ? 'on' : 'off';
-        $view->assign('withoutConfirmation',$withoutConfirmation);
+	    if (!$this->isSearchBot()) {
+            $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
+            $path   = $plugin->getPath();
+            $view->addTemplateDir($path . '/Resources/views');
+            $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
+            $actualShop = Shopware()->Shop();
+            $config = $configReader->getByPluginName($plugin->getName(),$actualShop);
 
-		$active = ($config['active']) ? 'on' : 'off';
-        $redirectShop = $this->baseUrlFinder->findUrl($this->modelManager);
+            $withoutConfirmation = ($config['withoutConfirmation']) ? 'on' : 'off';
 
-        if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
-            $active = 'off';
-
-        $view->assign('active',$active);
-        if ($active == 'on') {
+            $active = ($config['active']) ? 'on' : 'off';
+            $redirectShop = $this->baseUrlFinder->findUrl($this->modelManager);
             $local = $redirectShop->getLocale();
-            $view->assign('language',$local->getLanguage());
-            $view->assign('local',$local->getTerritory());
-        } else {
-            $view->assign('language','');
-            $view->assign('local','');
+            $language = $local->getLanguage();
+            $local = $local->getTerritory();
+            if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
+                $active = 'off';
         }
+
+        $view->assign('withoutConfirmation',$withoutConfirmation);
+        $view->assign('active',$active);
+        $view->assign('language',$language);
+        $view->assign('local',$local);
 	}
 
 	public function getWidgetsRedirectController() {
@@ -95,5 +100,36 @@ class Frontend implements SubscriberInterface
         return new ArrayCollection(array(
             $less
         ));
+    }
+
+    /**
+     * @return bool
+     * https://developers.google.com/search/docs/advanced/crawling/verifying-googlebot?visit_id=637660131470366219-258089992&rd=1
+     */
+    private function isSearchBot()
+    {
+        $isSearchBotByAgent = (
+            isset($_SERVER['HTTP_USER_AGENT'])
+            && preg_match('/bot|crawl|google|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'])
+        );
+
+        $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
+
+        $isSearchBotByIp = (
+            isset($hostname)
+            && preg_match('/bot|crawl|slurp|spider|mediapartners/i', $hostname)
+        );
+
+        $reversIp = gethostbyname($hostname);
+
+        $isBotDns = $_SERVER['REMOTE_ADDR'] == $reversIp;
+
+        if($isSearchBotByIp && $isBotDns)
+            return true;
+
+        if ($isSearchBotByAgent || $isSearchBotByIp)
+            return true;
+
+        return false;
     }
 }

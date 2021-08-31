@@ -1,7 +1,7 @@
 (function ($, window) {
 	'use strict';
     let redirect = getLocalStorage('netzhirsch-redirect');
-    if (withoutConfirmation === undefined || active === 'off')
+    if (typeof (withoutConfirmation) === 'undefined' || active === 'off')
         return;
 
     let newUrl = '';
@@ -10,8 +10,7 @@
             url: "/frontend/redirect/ajaxRedirect",
             method: 'GET',
             success: function(result) {
-                // setLocalStorage('netzhirsch-redirect', '1');
-                console.log(result);
+                setLocalStorage('netzhirsch-redirect', '1');
                 if (result !== '')
                     newUrl = result;
                 if (!window.location.href.indexOf(newUrl) >= 0) {
