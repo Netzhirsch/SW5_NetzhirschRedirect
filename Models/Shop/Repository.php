@@ -13,14 +13,15 @@ class Repository extends ShopRepository
 {
 
     /**
-     * @param array $localesInShop
+     * @param $locale
+     * @return array|mixed
      */
-    public function findByLocalesInShop($countryCodeByBrowser)
+    public function findByLocalesInShop($locale)
     {
 
         $db = Shopware()->Db();
 
-        return $db->fetchRow(
+        $shopId = $db->fetchRow(
             '
 				SELECT cv.shop_id FROM `s_core_config_values` AS cv
                 LEFT JOIN s_core_config_elements ce ON cv.element_id = ce.id
@@ -31,10 +32,47 @@ class Repository extends ShopRepository
 				',
             [
                 'locales',
-                $countryCodeByBrowser,
+                $locale,
             ]
         ) ?: [];
 
+        if (!empty($shopId))
+            return $shopId;
+
+        if (strpos($locale, '_')) {
+            $parameters = explode('_', $locale);
+            $shopId = $db->fetchRow(
+                '
+				SELECT cv.shop_id FROM `s_core_config_values` AS cv
+                LEFT JOIN s_core_config_elements ce ON cv.element_id = ce.id
+                LEFT JOIN s_core_config_forms cf ON ce.form_id = cf.id
+                LEFT JOIN s_core_shops cs ON cs.id = cv.shop_id
+                LEFT JOIN s_core_locales cl ON cl.id = cs.locale_id
+                WHERE ce.name = ? AND cl.locale LIKE ? OR cl.locale LIKE ?
+				',
+                [
+                    'locales',
+                    '%'.$parameters[0].'%',
+                    '%'.$parameters[1].'%'
+                ]
+            ) ?: [];
+        } else {
+            $shopId = $db->fetchRow(
+                '
+                    SELECT cv.shop_id FROM `s_core_config_values` AS cv
+                    LEFT JOIN s_core_config_elements ce ON cv.element_id = ce.id
+                    LEFT JOIN s_core_config_forms cf ON ce.form_id = cf.id
+                    LEFT JOIN s_core_shops cs ON cs.id = cv.shop_id
+                    LEFT JOIN s_core_locales cl ON cl.id = cs.locale_id
+                    WHERE ce.name = ? AND cl.locale LIKE ?
+                    ',
+                [
+                    'locales',
+                    '%'.$locale.'%',
+                ]
+            ) ?: [];
+        }
+        return $shopId;
 
     }
 

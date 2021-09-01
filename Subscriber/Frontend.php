@@ -67,11 +67,13 @@ class Frontend implements SubscriberInterface
 
             $active = ($config['active']) ? 'on' : 'off';
             $redirectShop = $this->baseUrlFinder->findUrl($this->modelManager);
-            $local = $redirectShop->getLocale();
-            $language = $local->getLanguage();
-            $local = $local->getTerritory();
-            if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
-                $active = 'off';
+            if (!empty($redirectShop)) {
+                $local = $redirectShop->getLocale();
+                $language = $local->getLanguage();
+                $local = $local->getTerritory();
+                if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
+                    $active = 'off';
+            }
         }
 
         $view->assign('withoutConfirmation',$withoutConfirmation);

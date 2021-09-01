@@ -20,7 +20,7 @@ class NetzhirschRedirect extends Plugin {
     {
         $schemaManager = $this->container->get('dbal_connection')->getSchemaManager();
         if ($schemaManager->tablesExist(['s_plugin_netzhirschRedirect_locationByIp']))
-            return ['success' => true, 'invalidateCache' => ['config', 'backend', 'proxy', 'frontend']];
+            return;
 
         /** @var ModelManager $modelManager */
         $modelManager = $this->container->get('models');
@@ -42,9 +42,7 @@ class NetzhirschRedirect extends Plugin {
         $tool = new SchemaTool($em);
         $classes = [$em->getClassMetadata(LocationByIP::class)];
         $tool->dropSchema($classes);
-
-        if ($context->getPlugin()->getActive())
-            $context->scheduleClearCache(UninstallContext::CACHE_LIST_ALL);
+        $context->scheduleClearCache(UninstallContext::CACHE_LIST_ALL);
 
     }
 
@@ -81,13 +79,15 @@ class NetzhirschRedirect extends Plugin {
            return;
 
         $data = $this->getDataFormLine($file_handle);
-        foreach ($data as $locations) {
+        foreach ($data as $index => $locations) {
             $locationByIP = new LocationByIP();
             $locationByIP->setIpFrom($locations['ipFrom']);
             $locationByIP->setIpTo($locations['ipTo']);
             $locationByIP->setCountryCode($locations['countryCode']);
             $locationByIP->setCountryName($locations['countryName']);
             $modelManager->persist($locationByIP);
+            if ($index % 10000 == 0)
+                $modelManager->flush();
         }
         try {
             $modelManager->flush();
