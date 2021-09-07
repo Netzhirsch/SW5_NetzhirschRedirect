@@ -95,6 +95,8 @@ class Frontend implements SubscriberInterface
                 $local = $local->getTerritory();
                 if ($actualShop->getId() == $redirectShop->getId())
                     $active = 'off';
+            } else {
+                $active = 'off';
             }
         }
 

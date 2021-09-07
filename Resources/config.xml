@@ -34,7 +34,7 @@
             <name>redirectRule</name>
             <label lang="de">Umleitungsregel</label>
             <label>Redirect rule</label>
-            <value>ip</value>
+            <value>ip/browser</value>
             <description lang="de">Anhand welcher Kriterien soll eine Umleitung stattfinden?</description>
             <description>Based on which criteria a diversion should take place.</description>
             <store>
