@@ -41,17 +41,11 @@ class BaseUrlFinder
         $em = $this->modelManager;
         if (strpos($redirectRule, 'ip') !== false) {
             $countryCodeTmp = $this->getCountryCodeByIP($em);
-            if (empty($countryCodeTmp))
-                return null;
-
             $countryCode['byIp'] = $countryCodeTmp;
         }
 
         if (strpos($redirectRule, 'browser') !== false) {
             $countryCodeTmp = $this->getLocalByBrowser();
-            if (empty($countryCodeTmp))
-                return null;
-
             $countryCode['byBrowser'] = $countryCodeTmp;
         }
 
