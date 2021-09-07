@@ -7,6 +7,8 @@ use Enlight\Event\SubscriberInterface;
 use Enlight_Controller_Action;
 use Enlight_Event_EventArgs;
 use NetzhirschRedirect\Components\BaseUrlFinder;
+use NetzhirschRedirect\Models\Shop\Repository;
+use NetzhirschRedirect\Models\Shop\Shop;
 use Shopware\Components\Model\ModelManager;
 use Shopware\Components\Theme\LessDefinition;
 use function Composer\Autoload\includeFile;
@@ -19,17 +21,14 @@ class Frontend implements SubscriberInterface
 	 */
 	private $pluginDirectory;
     private $baseUrlFinder;
-    private ModelManager $modelManager;
 
     public function __construct(
 		$pluginDirectory,
-        BaseUrlFinder $baseUrlFinder,
-        ModelManager $modelManager
+        BaseUrlFinder $baseUrlFinder
 	)
 	{
 		$this->pluginDirectory = $pluginDirectory;
         $this->baseUrlFinder = $baseUrlFinder;
-        $this->modelManager = $modelManager;
     }
 
 	/**
@@ -38,12 +37,34 @@ class Frontend implements SubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return [
-			'Enlight_Controller_Action_PostDispatch_Frontend_Index' => 'onFrontendPostDispatch',
 			'Enlight_Controller_Dispatcher_ControllerPath_Widgets_Redirect' => 'getWidgetsRedirectController',
             'Theme_Compiler_Collect_Plugin_Javascript' => 'addJsFiles',
-            'Theme_Compiler_Collect_Plugin_Less' => 'addLessFile'
+            'Theme_Compiler_Collect_Plugin_Less' => 'addLessFile',
+			'Enlight_Controller_Action_PostDispatch_Frontend_Index' => 'onFrontendPostDispatch'
 		];
 	}
+
+    public function getWidgetsRedirectController() {
+        return $this->pluginDirectory . '/Controllers/Widgets/Redirect.php';
+    }
+
+    public function addJsFiles()
+    {
+        $jsFiles = array($this->pluginDirectory . '/Resources/views/frontend/_public/src/js/netzhirsch-pop-up-before-redirect.js');
+        return new ArrayCollection($jsFiles);
+    }
+    public function addLessFile()
+    {
+        $less = new LessDefinition(array(),
+            array(
+                $this->pluginDirectory .
+                '/Resources/views/frontend/_public/src/less/netzhirsch-pop-up-before-redirect.less'
+            ), __DIR__);
+
+        return new ArrayCollection(array(
+            $less
+        ));
+    }
 
 	public function onFrontendPostDispatch(Enlight_Event_EventArgs $args) {
         $withoutConfirmation = '';
@@ -61,17 +82,18 @@ class Frontend implements SubscriberInterface
             $view->addTemplateDir($path . '/Resources/views');
             $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
             $actualShop = Shopware()->Shop();
+
             $config = $configReader->getByPluginName($plugin->getName(),$actualShop);
 
             $withoutConfirmation = ($config['withoutConfirmation']) ? 'on' : 'off';
 
             $active = ($config['active']) ? 'on' : 'off';
-            $redirectShop = $this->baseUrlFinder->findUrl($this->modelManager);
+            $redirectShop = $this->baseUrlFinder->findUrl();
             if (!empty($redirectShop)) {
                 $local = $redirectShop->getLocale();
                 $language = $local->getLanguage();
                 $local = $local->getTerritory();
-                if (empty($redirectShop) || $actualShop->getId() == $redirectShop->getId())
+                if ($actualShop->getId() == $redirectShop->getId())
                     $active = 'off';
             }
         }
@@ -81,28 +103,6 @@ class Frontend implements SubscriberInterface
         $view->assign('language',$language);
         $view->assign('local',$local);
 	}
-
-	public function getWidgetsRedirectController() {
-	    return $this->pluginDirectory . '/Controllers/Widgets/Redirect.php';
-	}
-
-    public function addJsFiles()
-    {
-        $jsFiles = array($this->pluginDirectory . '/Resources/views/frontend/_public/src/js/netzhirsch-pop-up-before-redirect.js');
-        return new ArrayCollection($jsFiles);
-    }
-    public function addLessFile()
-    {
-        $less = new LessDefinition(array(),
-            array(
-                $this->pluginDirectory .
-                '/Resources/views/frontend/_public/src/less/netzhirschRedirect.less'
-            ), __DIR__);
-
-        return new ArrayCollection(array(
-            $less
-        ));
-    }
 
     /**
      * @return bool

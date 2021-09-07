@@ -36,7 +36,12 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
 
         $currentUrl = $_SERVER['REDIRECT_URL'];
 
-        if ($config['withoutConfirmation'] && $currentUrl != $shop->getBaseUrl()) {
+        if (
+                ($config['withoutConfirmation'] && $currentUrl != $shop->getBaseUrl())
+                ||
+                ($config['withoutConfirmation'] && empty($shop->getBaseUrl())
+            )
+        ) {
             $session->offsetSet(self::SESSION_KEY, true);
             header('Location: '.$shop->getBaseUrl());
             exit();
@@ -54,7 +59,7 @@ class Shopware_Controllers_Widgets_Redirect extends Enlight_Controller_Action {
             return null;
         }
 
-        return $redirectUrlService->findUrl($this->getModelManager());
+        return $redirectUrlService->findUrl();
     }
 
 

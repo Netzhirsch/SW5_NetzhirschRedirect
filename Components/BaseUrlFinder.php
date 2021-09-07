@@ -5,16 +5,28 @@ namespace NetzhirschRedirect\Components;
 use NetzhirschRedirect\Models\LocationByIP\LocationByIP;
 use NetzhirschRedirect\Models\Shop\Repository;
 use NetzhirschRedirect\Models\Shop\Shop;
+use Shopware\Components\Logger;
+use Shopware\Components\Model\ModelManager;
 use Shopware\Models\Shop\DetachedShop;
 
 class BaseUrlFinder
 {
 
+    /** @var ModelManager $modelManager */
+    private $modelManager;
+    /** @var Logger $logger */
+    private $logger;
+
+    public function __construct(ModelManager $modelManager,Logger $logger)
+    {
+        $this->modelManager = $modelManager;
+        $this->logger = $logger;
+    }
+
     /**
-     * @param $em
      * @return null|Shop|DetachedShop
      */
-    public function findUrl($em){
+    public function findUrl(){
         $shop = Shopware()->Shop();
         $plugin = Shopware()->Container()->get('kernel')->getPlugins()['NetzhirschRedirect'];
         $configReader = Shopware()->Container()->get('shopware.plugin.cached_config_reader');
@@ -26,6 +38,7 @@ class BaseUrlFinder
 
         $redirectRule = $config['redirectRule'];
         $countryCode = [];
+        $em = $this->modelManager;
         if (strpos($redirectRule, 'ip') !== false) {
             $countryCodeTmp = $this->getCountryCodeByIP($em);
             if (empty($countryCodeTmp))
@@ -41,7 +54,6 @@ class BaseUrlFinder
 
             $countryCode['byBrowser'] = $countryCodeTmp;
         }
-
 
         /** @var Repository $repoShop */
         $repoShop = $em->getRepository(Shop::class);
@@ -62,6 +74,7 @@ class BaseUrlFinder
         $ipClient = $_SERVER["REMOTE_ADDR"];
 
         $repoLocationByIP = $em->getRepository(LocationByIP::class);
+        /** @var LocationByIP $locationByIP */
         $locationByIP = $repoLocationByIP->findByIPRange($ipClient);
         if (empty($locationByIP))
             return null;
@@ -103,10 +116,11 @@ class BaseUrlFinder
      */
     private function findShopByLocalInPluginConfig($repoShop,$countryCodeByBrowser)
     {
-        $shopId = $repoShop->findByLocalesInShop($countryCodeByBrowser);
+        $logger = $this->logger;
+        $shopId = $repoShop->findByLocalesInShop($countryCodeByBrowser,$logger);
         if (empty($shopId))
             return null;
-        return $repoShop->getById($shopId['shop_id']);
+        return $repoShop->getById($shopId);
     }
 
     /**

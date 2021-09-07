@@ -5,6 +5,7 @@ namespace NetzhirschRedirect;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\ORM\Tools\ToolsException;
+use Exception;
 use Shopware\Components\Model\ModelManager;
 use NetzhirschRedirect\Models\LocationByIP\LocationByIP;
 use Shopware\Components\Plugin\Context\ActivateContext;
@@ -26,10 +27,16 @@ class NetzhirschRedirect extends Plugin {
         $modelManager = $this->container->get('models');
         $tool = new SchemaTool($modelManager);
         $classes = [$modelManager->getClassMetadata(LocationByIP::class)];
+        $logger = $this->container->get('pluginlogger');
         try {
             $tool->createSchema($classes);
-			$this->readCsv($modelManager);
-        } catch (ToolsException $e) {
+            try {
+			    $this->readCsv($modelManager);
+            } catch (Exception $exception) {
+                $logger->error($exception->getMessage());
+            }
+        } catch (ToolsException $exception) {
+            $logger->error($exception->getMessage());
         }
     }
 
@@ -60,6 +67,7 @@ class NetzhirschRedirect extends Plugin {
 
     /**
      * @param ModelManager $modelManager
+     * @throws Exception
      */
     private function readCsv(
         ModelManager $modelManager
@@ -77,6 +85,7 @@ class NetzhirschRedirect extends Plugin {
 
         if (!$file_handle)
            return;
+
 
         $data = $this->getDataFormLine($file_handle);
         foreach ($data as $index => $locations) {
